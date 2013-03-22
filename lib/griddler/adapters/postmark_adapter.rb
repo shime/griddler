@@ -12,11 +12,11 @@ module Griddler
 
       def normalize_params
         {
-          to: params[:ToFull][:Email],
-          from: params[:FromFull][:Email],
-          subject: params[:Subject],
-          text: params[:TextBody],
-          html: params[:HtmlBody],
+          to:          params["To"],
+          from:        params["From"],
+          subject:     params["Subject"],
+          text:        params["TextBody"],
+          html:        params["HtmlBody"],
           attachments: attachment_files,
         }
       end
@@ -30,17 +30,17 @@ module Griddler
 
         attachments.map do |attachment|
           ActionDispatch::Http::UploadedFile.new({
-            filename: attachment[:Name],
-            type: attachment[:ContentType],
+            filename: attachment["Name"],
+            type: attachment["ContentType"],
             tempfile: create_tempfile(attachment)
           })
         end
       end
 
       def create_tempfile(attachment)
-        filename = attachment[:Name]
+        filename = attachment["Name"]
         tempfile = Tempfile.new(filename, Dir::tmpdir, encoding: 'ascii-8bit')
-        tempfile.write(Base64.decode64(attachment[:Content]))
+        tempfile.write(Base64.decode64(attachment["Content"]))
         tempfile.rewind
         tempfile
       end
